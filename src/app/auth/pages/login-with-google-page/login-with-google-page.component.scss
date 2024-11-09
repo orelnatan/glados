@@ -1,0 +1,18 @@
+
+.login-with-google-page-main {
+  position: relative;
+  display: grid;
+  align-items: center;
+  height: 100%;
+
+  span {
+    position: absolute;
+    top: 0px;
+    font-family: assistant-bold;
+  }
+
+  img {
+    width: 225px;
+    margin: 0 auto;
+  }
+}

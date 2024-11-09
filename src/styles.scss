@@ -1,1 +1,22 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'assets/design-system/utils.scss';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: heebo-regular;
+}
+
+body.hyperion {
+  @include hyperion();
+}
+
+body.aurora {
+  @include aurora();
+}
+
+body {
+  color: var(--text-color);
+  background: var(--color-background);
+}
+
