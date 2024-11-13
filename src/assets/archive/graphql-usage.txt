@@ -41,10 +41,75 @@ loadDragons() {
 `;
 
  this.apollo.query({
-      query: GET_USER,
-      variables: {
-        id: "jc5pzl3pjtcen2HoWWZm"
+  query: GET_USER,
+  variables: {
+    id: "jc5pzl3pjtcen2HoWWZm"
+  }
+}).subscribe(({data, error} : any) => {
+  console.log(data)
+})
+
+////////////////////////////////////////////////////////////////////
+
+const GET_USER = gql`
+  query getUser($id: String!) {
+    getUser(id: $id) {
+      email
+    }
+  }
+`;
+
+getUser(): void {
+  this.apollo.query({
+    query: GET_USER,
+    context: {
+      headers: {
+        Authorization: `Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlNTIxYmY1ZjdhNDAwOGMzYmQ3MjFmMzk2OTcwOWI1MzY0MzA5NjEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiT3JlbCBOYXRlbiIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLdEZuWnZVSXp3TGRCSTRzdEcwcThoekt4elRpd1Q3c2Z2d1NDSXJJWW51SVNFMlNzPXM5Ni1jIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL2NoYXQtYm9vdGgtc2VydmVyLXYwIiwiYXVkIjoiY2hhdC1ib290aC1zZXJ2ZXItdjAiLCJhdXRoX3RpbWUiOjE3MzE1MzM2ODEsInVzZXJfaWQiOiJsSGNhMWp0dzF3TTBscWZHUXM4OWlPU3RuRHMxIiwic3ViIjoibEhjYTFqdHcxd00wbHFmR1FzODlpT1N0bkRzMSIsImlhdCI6MTczMTUzMzY4MSwiZXhwIjoxNzMxNTM3MjgxLCJlbWFpbCI6Im5hdGVub3JlbEBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJnb29nbGUuY29tIjpbIjEwOTUyMTk4ODA5OTE4NDIxNTEyMCJdLCJlbWFpbCI6WyJuYXRlbm9yZWxAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.Lel29WE-FmR3h66dU3IbDwUg_4fJaz16xVMZ6IdyxczWPnQwfT2ClZw2U-hjaOijGmvnKiGVt6QdFW-yXGXuM0IL03uRYYPlKKH8R07MYiwbuZw1cQAU5LN6zPr4CsBXQDzkuE3gVamA3vf0byrypOU8dGa-BSuWNPB4gjcoajjXM5L6wO6JQF4EoPKcApSvVBSvE0DrDHtGHGYiO3rROz3HhKcLcUcO-vyXKtu4rNZuykatcVF1q6-SosfDpQ--SpCk4e74sNhFhjzCNunXkXSWQMlezq7xhZ69sitkRjvTUAjlRCdJawfVtt2HqRD2UeZzeJ4FBJippUdmi7zOqw`
       }
-    }).subscribe(({data, error} : any) => {
-      console.log(data)
+    },
+    variables: {
+      id: "jc5pzl3pjtcen2HoWWZm",
+    },
+  }).subscribe(({ data, error } : any) => {
+    console.log(data, error)
+  })
+}
+
+////////////////////////////////////////////////////////////////////
+
+const LOGIN = gql`
+  query login($idToken: String!) {
+    login(idToken: $idToken)
+  }
+`;
+
+this.googleAuthService.login().then(
+  (credential: GUserCredential) => {
+    credential.user!.getIdToken().then((token: string) => {
+      console.log(token);
+
+      this.apollo.mutate({
+        mutation: LOGIN,
+        variables: {
+          idToken: token
+        }
+      }).subscribe(({ data } : any) => {
+        console.log(data);
+
+        window.postMessage({ source: Origin.GLaDOS, type: WindowMessageType.GoogleLoginSuccess, payload: { email: credential.user?.email, token }}, '*');
+      })
     })
+})
+
+///////////////////////////////////////////////////////////////////
+
+const LOGIN = gql`
+  mutation login($idToken: String!) {
+    login(idToken: $idToken) {
+      email
+      name
+      picture
+    }
+  }
+`;
+

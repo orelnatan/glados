@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
+import { ApolloError } from 'apollo-server-errors';
 
-import { GoogleAuthService } from '@glados/auth/services';
+import { WindowMessage, WindowMessageType, Origin } from '@glados/core/models';
 import { LayoutModule } from '@glados/shared/layout';
 import { UtilsModule } from '@glados/shared/utils';
-import { GUserCredential } from '@glados/shared/firebase';
-
-import { Apollo } from "apollo-angular";
+import { GoogleAuthService } from '@glados/auth/services';
+import { AuthCredentials } from '@glados/auth/models';
 
 @Component({
   selector: 'login-page',
@@ -20,19 +20,26 @@ import { Apollo } from "apollo-angular";
 export class LoginWithGooglePageComponent {
   constructor(
     private readonly googleAuthService: GoogleAuthService,
-    private readonly apollo: Apollo
   ) {} 
 
   ngOnInit(): void {
-    this.googleAuthService.getCurrentUser().subscribe(user => {
-      !user ? this.login() : null
-    });
+    this.logout();
+  }
+
+  logout(): void {
+    this.googleAuthService.logout().then(() => {
+      console.log("You have logged out!!")
+    })
   }
 
   login(): void {
-    this.googleAuthService.login().then(
-      (user: GUserCredential) => {
-      console.log(user)
+    this.googleAuthService.login().subscribe({
+      next: (credentials: AuthCredentials): void => {
+        window.postMessage({ source: Origin.GLaDOS, type: WindowMessageType.LoginSuccess, payload: { credentials }} as WindowMessage, '*');
+      },
+      error: (error: ApolloError): void => {
+        window.postMessage({ source: Origin.GLaDOS, type: WindowMessageType.LoginFailed, payload: { error }} as WindowMessage, '*');
+      },
     })
-  }
+  }  
 }
