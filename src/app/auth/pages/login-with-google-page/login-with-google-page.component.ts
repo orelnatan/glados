@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ApolloError } from 'apollo-server-errors';
+import { FirebaseError } from 'firebase/app';
 
 import { WindowMessage, MessageType, MessageOrigin } from '@glados/core/models';
 import { LayoutModule } from '@glados/shared/layout';
@@ -35,10 +35,10 @@ export class LoginWithGooglePageComponent {
   login(): void {
     this.googleAuthService.login().subscribe({
       next: (credentials: AuthCredentials): void => {
-        window.postMessage({ source: MessageOrigin.GLaDOS, type: MessageType.LoginSuccess, payload: { credentials }} as WindowMessage, '*');
+        window.postMessage({ source: MessageOrigin.GLaDOS, type: MessageType.AccessGranted, payload: { ...credentials }} as WindowMessage, '*');
       },
-      error: (error: ApolloError): void => {
-        window.postMessage({ source: MessageOrigin.GLaDOS, type: MessageType.LoginFailed, payload: { error }} as WindowMessage, '*');
+      error: (error: FirebaseError): void => {
+        window.postMessage({ source: MessageOrigin.GLaDOS, type: MessageType.AccessDenied, payload: { ...error }} as WindowMessage, '*');
       },
     })
   }  

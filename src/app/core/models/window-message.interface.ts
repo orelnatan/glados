@@ -3,7 +3,7 @@ import { MessageOrigin } from "./message-origin.enum";
 import { MessagePayload } from "./message-payload.type";
 
 export interface WindowMessage {
-  source: MessageOrigin;
+  source?: MessageOrigin;
   type: MessageType;
-  payload: MessagePayload;
+  payload?: MessagePayload;
 }

@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
+
 import { graphQLProvider } from 'graphql.provider';
 import { imageProvider } from 'image.provider';
 

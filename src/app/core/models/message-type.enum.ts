@@ -1,5 +1,5 @@
 
 export enum MessageType {
-  LoginSuccess = "LOGIN_SUCCESS",
-  LoginFailed = "LOGIN_FAILED",
+  AccessGranted = "ACCESS_GRANTED",
+  AccessDenied = "ACCESS_DENIED",
 }
