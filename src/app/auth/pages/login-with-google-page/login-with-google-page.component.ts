@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ApolloError } from 'apollo-server-errors';
 
-import { WindowMessage, WindowMessageType, Origin } from '@glados/core/models';
+import { WindowMessage, MessageType, MessageOrigin } from '@glados/core/models';
 import { LayoutModule } from '@glados/shared/layout';
 import { UtilsModule } from '@glados/shared/utils';
 import { GoogleAuthService } from '@glados/auth/services';
@@ -35,10 +35,10 @@ export class LoginWithGooglePageComponent {
   login(): void {
     this.googleAuthService.login().subscribe({
       next: (credentials: AuthCredentials): void => {
-        window.postMessage({ source: Origin.GLaDOS, type: WindowMessageType.LoginSuccess, payload: { credentials }} as WindowMessage, '*');
+        window.postMessage({ source: MessageOrigin.GLaDOS, type: MessageType.LoginSuccess, payload: { credentials }} as WindowMessage, '*');
       },
       error: (error: ApolloError): void => {
-        window.postMessage({ source: Origin.GLaDOS, type: WindowMessageType.LoginFailed, payload: { error }} as WindowMessage, '*');
+        window.postMessage({ source: MessageOrigin.GLaDOS, type: MessageType.LoginFailed, payload: { error }} as WindowMessage, '*');
       },
     })
   }  

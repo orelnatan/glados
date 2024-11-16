@@ -1,12 +1,14 @@
 import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
-import { catchError, from, map, Observable, switchMap, throwError } from 'rxjs';
+import { catchError, from, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { Apollo, gql } from "apollo-angular";
 
 import { GoogleAuthProvider, GUserCredential } from "@glados/shared/firebase";
 import { jsonParse } from "@glados/shared/utils";
 
 import { AuthCredentials, AuthStatus } from "../models";
+
+import * as LOGIN_MOCK from '@glados/assets/mocks/login-with-google.mock.json'; 
 
 const LOGIN = gql`
   mutation login($idToken: String!) {
@@ -24,6 +26,8 @@ export class GoogleAuthService {
   ) {}
   
   login(): Observable<AuthCredentials> {
+    return of({ ...LOGIN_MOCK } as unknown as AuthCredentials);
+
     return from(this.angularFireAuth.signInWithPopup(new GoogleAuthProvider())).pipe(
       switchMap((credential: GUserCredential): Observable<AuthCredentials> => {
         return from(credential.user!.getIdToken()).pipe(
